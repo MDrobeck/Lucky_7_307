@@ -5,8 +5,9 @@ import React, { useState } from "react";
 
   function Form(props) {
   const [person, setPerson] = useState({
-    name: "",
-    job: ""
+    Task: "",
+    Time: "",
+    Priority: ""
   });
   
   async function submitForm() {
@@ -41,7 +42,7 @@ import React, { useState } from "react";
         value={person.job}
         onChange={handleChange}
       />x
-      <input type="button" value="Submit" onClick={submitForm} />
+      <input type="button" value="Add Task" onClick={submitForm} />
     </form>
   );
 }

@@ -5,9 +5,13 @@ function TableHeader() {
     return (
       <thead>
         <tr>
-          <th>Name</th>
-          <th>Job</th>
-          <th>ID</th>
+        <th>Monday</th>
+          <th>Tuesday</th>
+          <th>Wednesday</th>
+          <th>Thursday</th>
+          <th>Friday</th>
+          <th>Saturday</th>
+          <th>Sunday</th>
         </tr>
       </thead>
     );
@@ -16,10 +20,10 @@ function TableHeader() {
   function TableBody(props) {
     const rows = props.characterData.map((row) => {
       return (
-        <tr key={row.id}>
-  <td>{row.name}</td>
-  <td>{row.job}</td>
-  <td>{row.id}</td>
+        <tr key={row.Task}>
+  <td>{row.Task}</td>
+  <td>{row.Time}</td>
+  <td>{row.Priority}</td>
   <td>
     <button onClick={() => props.removeCharacter(row.id)}>
       Delete
