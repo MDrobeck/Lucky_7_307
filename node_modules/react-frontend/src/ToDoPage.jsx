@@ -10,9 +10,9 @@ function ToDoPage() {
 
 	const [tasksByDay, setTasksByDay] = useState({});
 
-  const INVALID_TOKEN = "INVALID_TOKEN";
-  const [token, setToken] = useState(INVALID_TOKEN);
-  const [message, setMessage] = useState("");
+	const INVALID_TOKEN = "INVALID_TOKEN";
+	const [token, setToken] = useState(INVALID_TOKEN);
+	const [message, setMessage] = useState("");
 
 	function removeOneCharacter(index) {
 		setTasksByDay((prevTasksByDay) => {
@@ -47,30 +47,30 @@ function ToDoPage() {
 		});
 	}
 
-  function fetchTasks() {
-    const promise = fetch("http://localhost:8000/tasks", {
+	function fetchTasks() {
+		const promise = fetch("http://localhost:8000/tasks", {
 			headers: addAuthHeader()
 		});
-    
-    return promise;
-  }
 
-  useEffect(() => {
-    console.log("useEffect is running. Current token:", token);
-    fetchTasks()
-      .then((res) =>
-        res.status === 200 ? res.json() : undefined
-      )
-      .then((json) => {
-        if (json) {
-          setTasksByDay(json["tasks_list"]);
-        } else {
-          setTasksByDay({});
-        }
-      });
-  }, [token]);
+		return promise;
+	}
 
-  // auth stuff
+	useEffect(() => {
+		console.log("useEffect is running. Current token:", token);
+		fetchTasks()
+			.then((res) =>
+				res.status === 200 ? res.json() : undefined
+			)
+			.then((json) => {
+				if (json) {
+					setTasksByDay(json["tasks_list"]);
+				} else {
+					setTasksByDay({});
+				}
+			});
+	}, [token]);
+
+	// auth stuff
 	function loginUser(creds) {
 		const promise = fetch(`http://localhost:8000/login`, {
 			method: "POST",
@@ -90,12 +90,12 @@ function ToDoPage() {
 					setMessage(
 						`Login Error ${response.status}: ${response.data}`
 					);
-          throw error;
+					throw error;
 				}
 			})
 			.catch((error) => {
 				setMessage(`Login Error: ${error}`);
-        throw error;
+				throw error;
 			});
 
 		return promise;
@@ -143,54 +143,66 @@ function ToDoPage() {
 	}
 
 	return (
-  <BrowserRouter>
-  <Routes>
-    {/* Login Route */}
-    <Route
-      path="/login"
-      element={
-        <Login
-          handleSubmit={loginUser}
-          message={message}
-        />
-      }
-    />
+		<BrowserRouter>
+			<Routes>
+				{/* Login Route */}
+				<Route
+					path="/login"
+					element={
+						<Login
+							handleSubmit={loginUser}
+							message={message}
+						/>
+					}
+				/>
 
-    {/* Main Content Route */}
-    <Route path="/" element={	<div className="container">
-			<HorizontalCalendar onDateSelect={setSelectedDate} />
-			<h1>Todo List</h1>
-			<Table
-				characterData={
-					tasksByDay[selectedDate.toDateString()] || []
-				}
-				removeCharacter={removeOneCharacter}
-			/>
-			<Form handleSubmit={updateDict} />
-			<ul>
-				<li>
-					<img class="icon" src="src/assets/home.svg"></img>
-				</li>
-				<li>
-					<img
-						class="icon"
-						src="src/assets/table.svg"
-					></img>
-				</li>
-			</ul>
-		</div>} />
+				{/* Main Content Route */}
+				<Route
+					path="/"
+					element={
+						<div className="container">
+							<HorizontalCalendar
+								onDateSelect={setSelectedDate}
+							/>
+							<h1>Todo List</h1>
+							<Table
+								characterData={
+									tasksByDay[
+										selectedDate.toDateString()
+									] || []
+								}
+								removeCharacter={removeOneCharacter}
+							/>
+							<Form handleSubmit={updateDict} />
+							<ul>
+								<li>
+									<img
+										class="icon"
+										src="src/assets/home.svg"
+									></img>
+								</li>
+								<li>
+									<img
+										class="icon"
+										src="src/assets/table.svg"
+									></img>
+								</li>
+							</ul>
+						</div>
+					}
+				/>
 
-    <Route
-      path="/signup"
-      element={
-        <Login
-          handleSubmit={signupUser}
-          buttonLabel="Sign Up"
-        />
-      }
-    />
-  </Routes>
-  </BrowserRouter>
+				<Route
+					path="/signup"
+					element={
+						<Login
+							handleSubmit={signupUser}
+							buttonLabel="Sign Up"
+						/>
+					}
+				/>
+			</Routes>
+		</BrowserRouter>
 	);
 }
 export default ToDoPage;

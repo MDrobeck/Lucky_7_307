@@ -48,7 +48,8 @@ function Login(props) {
 	}
 
 	function submitForm() {
-		props.handleSubmit(creds)
+		props
+			.handleSubmit(creds)
 			.then(() => {
 				navigate("/"); // Navigate to home after successful login/signup
 			})
