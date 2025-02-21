@@ -57,6 +57,7 @@ export function authenticateUser(req, res, next) {
 				"6b82d531eb46cff8f35435e4e0bc3a34d43d382ad16c57663fbee52f38470dc68c47766ee5f650ba824688da1ec50d28d559e10e57875cdc50e2595ee568facd",
 			(error, decoded) => {
 				if (decoded) {
+					req.username = decoded.username;
 					next();
 				} else {
 					console.log("JWT error:", error);

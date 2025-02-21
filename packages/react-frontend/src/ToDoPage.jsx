@@ -2,7 +2,12 @@ import React, { useState, useEffect } from "react";
 import Table from "./Table";
 import Form from "./Form";
 import HorizontalCalendar from "./Calendar";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import {
+	BrowserRouter,
+	Routes,
+	Route,
+	Navigate
+} from "react-router-dom";
 import Login from "./Login.jsx";
 
 function ToDoPage() {
@@ -13,6 +18,7 @@ function ToDoPage() {
 	const INVALID_TOKEN = "INVALID_TOKEN";
 	const [token, setToken] = useState(INVALID_TOKEN);
 	const [message, setMessage] = useState("");
+	const [isLoggedIn, setIsLoggedIn] = useState(false);
 
 	function removeOneCharacter(index) {
 		setTasksByDay((prevTasksByDay) => {
@@ -85,11 +91,13 @@ function ToDoPage() {
 						.json()
 						.then((payload) => setToken(payload.token));
 					setMessage(`Login successful; auth token saved`);
+					setIsLoggedIn(true);
 					console.log("Loggedin. Current token:", token);
 				} else {
 					setMessage(
 						`Login Error ${response.status}: ${response.data}`
 					);
+					setIsLoggedIn(false);
 					throw error;
 				}
 			})
@@ -114,6 +122,7 @@ function ToDoPage() {
 					response
 						.json()
 						.then((payload) => setToken(payload.token));
+					setIsLoggedIn(true);
 					setMessage(
 						`Signup successful for user: ${creds.username}; auth token saved`
 					);
@@ -121,6 +130,7 @@ function ToDoPage() {
 					setMessage(
 						`Signup Error ${response.status}: ${response.data}`
 					);
+					setIsLoggedIn(false);
 				}
 			})
 			.catch((error) => {
@@ -159,36 +169,43 @@ function ToDoPage() {
 				{/* Main Content Route */}
 				<Route
 					path="/"
+					// if not logged in, move straight to login page.
 					element={
-						<div className="container">
-							<HorizontalCalendar
-								onDateSelect={setSelectedDate}
-							/>
-							<h1>Todo List</h1>
-							<Table
-								characterData={
-									tasksByDay[
-										selectedDate.toDateString()
-									] || []
-								}
-								removeCharacter={removeOneCharacter}
-							/>
-							<Form handleSubmit={updateDict} />
-							<ul>
-								<li>
-									<img
-										class="icon"
-										src="src/assets/home.svg"
-									></img>
-								</li>
-								<li>
-									<img
-										class="icon"
-										src="src/assets/table.svg"
-									></img>
-								</li>
-							</ul>
-						</div>
+						isLoggedIn ? (
+							<div className="container">
+								<HorizontalCalendar
+									onDateSelect={setSelectedDate}
+								/>
+								<h1>Todo List</h1>
+								<Table
+									characterData={
+										tasksByDay[
+											selectedDate.toDateString()
+										] || []
+									}
+									removeCharacter={
+										removeOneCharacter
+									}
+								/>
+								<Form handleSubmit={updateDict} />
+								<ul>
+									<li>
+										<img
+											class="icon"
+											src="src/assets/home.svg"
+										></img>
+									</li>
+									<li>
+										<img
+											class="icon"
+											src="src/assets/table.svg"
+										></img>
+									</li>
+								</ul>
+							</div>
+						) : (
+							<Navigate to="/login" replace />
+						)
 					}
 				/>
 
