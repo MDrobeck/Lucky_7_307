@@ -20,6 +20,8 @@ app.use(express.json());
 
 app.get("/tasks", authenticateUser, (req, res) => {
 	{
+		const username = req.username;
+		console.log("the current username is: ", username);
 		res.send(tasks);
 	}
 });
