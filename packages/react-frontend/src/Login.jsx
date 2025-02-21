@@ -48,13 +48,11 @@ function Login(props) {
 	}
 
 	function submitForm() {
-		props
-			.handleSubmit(creds)
+		props.handleSubmit(creds)
 			.then(() => {
 				navigate("/"); // Navigate to home after successful login/signup
 			})
 			.catch((error) => {
-				// Error handling can be done here if needed
 				console.error("Login/Signup failed:", error);
 			});
 		setCreds({ username: "", pwd: "" });
