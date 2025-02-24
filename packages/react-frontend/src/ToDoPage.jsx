@@ -3,7 +3,7 @@ import Table from "./Table";
 import Form from "./Form";
 import HorizontalCalendar from "./Calendar";
 
-function ToDoPage() {
+function ToDoPage({ goToHomePage }) {
 	const [selectedDate, setSelectedDate] = useState(new Date());
 
 	const [tasksByDay, setTasksByDay] = useState({});
@@ -53,13 +53,28 @@ function ToDoPage() {
 			/>
 			<Form handleSubmit={updateDict} />
 			<ul>
-				<li>
-					<img class="icon" src="src/assets/home.svg"></img>
-				</li>
-				<li>
-					<img
-						class="icon"
-						src="src/assets/table.svg"
+				<li
+						onClick={goToHomePage} // Navigate to home page
+						style={{ cursor: "pointer",
+							display: "flex",
+							alignItems: "center",
+							justifyContent: "center",
+							width: "40px",
+							height: "40px",
+							borderRadius: "50%",
+							backgroundColor: "#f0f0f0" }}
+					>
+						<img
+							className="icon"
+							src="src/assets/home.svg"
+							alt="Home"
+						/>
+					</li>
+					<li>
+						<img
+							className="icon"
+							src="src/assets/table.svg"
+							alt="Table"
 					></img>
 				</li>
 			</ul>
