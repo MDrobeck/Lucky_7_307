@@ -3,7 +3,7 @@ import TaskTable from "./TaskTable";
 import Form from "./Form"; 
 
 
-function ToDoPage() { 
+function TaskPage() { 
     const [characters, setCharacters] = useState([]); 
     function removeOneCharacter(index) { 
       const updated = characters.filter((character, i) => { 
