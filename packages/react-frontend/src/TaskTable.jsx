@@ -36,7 +36,7 @@ function TableBody(props) {
 	return <tbody>{rows}</tbody>;
 }
 
-function Table(props) {
+function TaskTable(props) {
 	return (
 		<table>
 			<TableHeader />

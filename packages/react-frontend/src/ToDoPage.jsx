@@ -10,7 +10,7 @@ import {
 } from "react-router-dom";
 import Login from "./Login.jsx";
 
-function ToDoPage() {
+function ToDoPage({ goToTaskPage }) {
 	const [selectedDate, setSelectedDate] = useState(new Date());
 
 	const [tasksByDay, setTasksByDay] = useState({});
@@ -193,12 +193,23 @@ function ToDoPage() {
 										<img
 											class="icon"
 											src="src/assets/home.svg"
+											alt="Home"
 										></img>
 									</li>
-									<li>
+									<li
+										onClick={goToTaskPage} // Navigate to task page
+											style={{ cursor: "pointer",
+											display: "flex",
+											alignItems: "center",
+											justifyContent: "center",
+											width: "40px",
+											height: "40px",
+											borderRadius: "50%",
+											backgroundColor: "#f0f0f0" }}>
 										<img
-											class="icon"
+											className="icon"
 											src="src/assets/table.svg"
+											alt="Table"
 										></img>
 									</li>
 								</ul>
