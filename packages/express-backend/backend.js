@@ -1,14 +1,16 @@
 import express from "express";
 import cors from "cors";
-import { registerUser, loginUser, authenticateUser } from "./auth.js";
+// import { registerUser, loginUser, authenticateUser } from "./auth.js";
 
 const app = express();
 const port = 8000;
+app.use(cors());
 
 app.use(express.json());
 app.get("/", (req, res) => {
-	res.send("Hello World!");
+	res.send("Welcome to our ToDo backend!");
   });
+  
 
 const tasks= {
 	task_list: [{
@@ -36,14 +38,21 @@ const addTask = (task) => {
 	return task;
   };
 
+//finding task by name
+const findTaskByName = (name) => {
+	return users["task_list"].filter(
+	  (user) => user["task_name"] === name
+	);
+  };
 
 
 
 
 
-//authenticate
-app.post("/signup", registerUser);
-app.post("/login", loginUser);
+
+// //authenticate
+// app.post("/signup", registerUser);
+// app.post("/login", loginUser);
 
 app.listen(port, () => {
 	console.log(`Example app listening at http://localhost:${port}`);
@@ -62,9 +71,22 @@ app.get("/tasks", (req, res) => {
   });
 
   //app to post task
-  app.post("/users", (req, res) => {
+  app.post("/tasks", (req, res) => {
 	const taskToAdd = req.body;
 	addTask(taskToAdd);
 	res.send();
   });
 
+  //delete task by name
+  app.delete("/tasks", (req, res) => {
+	const name = req.params["task_name"]; //or req.params.id
+	let result = findTaskByName(name);
+	if (result == undefined){
+	  res.status(404).send("Resource not found")
+	}
+	else 
+	{
+	  const location = tasks.task_list.findIndex(tasks => tasks.task_name == task_name);
+	  users.users_list.splice(location, 1);
+	}
+  }) 
