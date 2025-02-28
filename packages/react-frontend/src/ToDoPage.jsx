@@ -62,7 +62,7 @@ function ToDoPage({ goToTaskPage }) {
 		return filteredTasks;
 	}
 
-	function updateDict(task) {
+	function updateTasks(task) {
 		console.log("this is task in update", task);
 		postTask(task)
 			.then((res) => {if (res.status === 201) return res.json()})
@@ -221,7 +221,7 @@ function ToDoPage({ goToTaskPage }) {
 										removeOneCharacter
 									}
 								/>
-								<Form handleSubmit={updateDict} date={selectedDate}/>
+								<Form handleSubmit={updateTasks} date={selectedDate}/>
 								<ul>
 									<li>
 										<img
