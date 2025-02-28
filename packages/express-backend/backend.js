@@ -10,27 +10,13 @@ app.use(cors());
 app.use(express.json());
 app.get("/", (req, res) => {
 	res.send("Welcome to our ToDo backend!");
-  });
-  
+});
 
 const tasks = {
-	tasks_list: {
-		"Thu Feb 20 2025": [
-			{ time: "5:00pm", task: "Grocery Shopping" },
-			{ time: "6:00pm", task: "Book Doctor Appointment" }
-		],
-		"Wed Feb 19 2025": [{ task: "Pay Bills" }]
-	}
+	tasks_list: {}
 };
 
-//find tasks by category
-const findtasksByCategory = (category) => {
-	return tasks["task_list"].filter(
-	  (category) => tasks["category"] === category
-	);
-  };
-
-//adding a task 
+//adding a task
 const addTask = (task) => {
 	if (!tasks["tasks_list"][task.date]) {
 		// If the key doesn't exist, initialize it with an empty array
@@ -49,12 +35,32 @@ const addTask = (task) => {
 	return task;
 };
 
+const removeTask = (task) => {
+	console.log("this is the task being deleted:", task);
+	console.log("these are the tasks", tasks);
+	console.log(
+		"this is on the specific date",
+		tasks["tasks_list"][task.date]
+	);
+	tasks["tasks_list"][task.date] = tasks["tasks_list"][
+		task.date
+	].filter(
+		(currTask) =>
+			currTask["name"] !== task.name ||
+			currTask["time"] !== task.time
+	);
+};
+
 //finding task by name
 const findTaskByName = (name) => {
 	return tasks["task_list"].filter(
-	  (user) => user["task_name"] === name
+		(user) => user["task_name"] === name
 	);
-  };
+};
+
+const generateID = () => {
+	return Math.random();
+};
 
 //authenticate
 app.post("/signup", registerUser);
@@ -72,10 +78,20 @@ app.get("/tasks", (req, res) => {
 	res.send(tasks);
 });
 
-  //app to post task
-  app.post("/tasks", (req, res) => {
+//app to post task
+app.post("/tasks", (req, res) => {
 	const taskToAdd = req.body;
 	console.log("the body is ", taskToAdd);
 	const addedTask = addTask(taskToAdd);
 	res.status(201).send(addedTask);
-  });
+});
+
+app.delete("/tasks", (req, res) => {
+	const taskToDelete = req.body;
+	if (taskToDelete === undefined) {
+		res.status(404).send("Task not found.");
+	} else {
+		removeTask(taskToDelete);
+		res.status(204).send();
+	}
+});

@@ -24,30 +24,56 @@ function ToDoPage({ goToTaskPage }) {
 		console.log("the date is ", date);
 		const taskWithDate = { ...task, date };
 		const promise = fetch("Http://localhost:8000/tasks", {
-		  method: "POST",
-		  headers: {
-			"Content-Type": "application/json"
-		  },
-		  body: JSON.stringify(taskWithDate)
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json"
+			},
+			body: JSON.stringify(taskWithDate)
 		});
-	  
+
+		return promise;
+	}
+
+	function deleteTask(task) {
+		const promise = fetch("Http://localhost:8000/tasks", {
+			method: "DELETE",
+			headers: {
+				"Content-Type": "application/json"
+			},
+			body: JSON.stringify(task)
+		});
+
 		return promise;
 	}
 
 	function removeOneCharacter(index) {
-		setTasksByDay((prevTasksByDay) => {
-			// the key
-			const dateString = selectedDate.toDateString();
-			// removes the task
-			const updated = currentTasks.filter((task, i) => {
-				return i !== index;
+		const dateString = selectedDate.toDateString();
+		const currentTasks = tasksByDay[dateString] || [];
+		const taskToDelete = currentTasks[index];
+
+		if (!taskToDelete) return;
+
+		deleteTask(taskToDelete)
+			.then((res) => {
+				if (res.status === 204) {
+					setTasksByDay((prevTasksByDay) => {
+						const prevTasks =
+							prevTasksByDay[dateString] || [];
+						const updatedTasks = prevTasks.filter(
+							(_, i) => i !== index
+						);
+						return {
+							...prevTasksByDay,
+							[dateString]: updatedTasks
+						};
+					});
+				} else {
+					console.error("Failed to delete task");
+				}
+			})
+			.catch((error) => {
+				console.error("Error deleting task:", error);
 			});
-			// returns the updated task w/o removed task
-			return {
-				...prevTasksByDay,
-				[dateString]: updated
-			};
-		});
 	}
 
 	function updateDict(task) {
@@ -55,20 +81,24 @@ function ToDoPage({ goToTaskPage }) {
 		const dateString = selectedDate.toDateString();
 
 		postTask(task, dateString)
-		.then((res) => {if (res.status === 201) return res.json()})
-		.then((json) => {setTasksByDay((prevTasksByDay) => {
-			console.log("this is json", json);
-			// the list of tasks
-			const currentTasks = prevTasksByDay[dateString] || [];
-			// adds the tasks to the dict
-			return {
-				...prevTasksByDay,
-				[dateString]: [...currentTasks, json]
-			};
-		})})
-		.catch((error) => {
-		  console.log(error);
-		});
+			.then((res) => {
+				if (res.status === 201) return res.json();
+			})
+			.then((json) => {
+				setTasksByDay((prevTasksByDay) => {
+					// the list of tasks
+					const currentTasks =
+						prevTasksByDay[dateString] || [];
+					// adds the tasks to the dict
+					return {
+						...prevTasksByDay,
+						[dateString]: [...currentTasks, json]
+					};
+				});
+			})
+			.catch((error) => {
+				console.log(error);
+			});
 		console.log("this is the tasksbyday", tasksByDay);
 	}
 
@@ -217,14 +247,17 @@ function ToDoPage({ goToTaskPage }) {
 									</li>
 									<li
 										onClick={goToTaskPage} // Navigate to task page
-											style={{ cursor: "pointer",
+										style={{
+											cursor: "pointer",
 											display: "flex",
 											alignItems: "center",
 											justifyContent: "center",
 											width: "40px",
 											height: "40px",
 											borderRadius: "50%",
-											backgroundColor: "#f0f0f0" }}>
+											backgroundColor: "#f0f0f0"
+										}}
+									>
 										<img
 											className="icon"
 											src="src/assets/table.svg"

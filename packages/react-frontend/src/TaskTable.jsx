@@ -1,15 +1,15 @@
 import React from "react";
 function TableHeader() {
-    return (
-        <thead>
-            <tr>
-                <th>Task</th>
-                <th>Time-to-Complete</th>
+	return (
+		<thead>
+			<tr>
+				<th>Task</th>
+				<th>Time-to-Complete</th>
 				<th>Start</th>
-                <th>Due</th>
-            </tr>
-        </thead>
-    );
+				<th>Due</th>
+			</tr>
+		</thead>
+	);
 }
 
 function TableBody(props) {
@@ -20,7 +20,7 @@ function TableBody(props) {
 		return (
 			<tr key={index}>
 				<td>{row.task}</td>
-                <td>{row.time}</td>
+				<td>{row.time}</td>
 				<td>{row.start}</td>
 				<td>{row.due}</td>
 				<td>

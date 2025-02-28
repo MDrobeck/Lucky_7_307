@@ -12,7 +12,7 @@ function TableHeader() {
 }
 
 function TableBody(props) {
-	console.log('characterData:', props.characterData);
+	console.log("characterData:", props.characterData);
 
 	if (props.characterData === null) {
 		return <caption>Data Unavailable</caption>;
