@@ -7,6 +7,39 @@ function ToDoPage() {
 	const [selectedDate, setSelectedDate] = useState(new Date());
 
 	const [tasksByDay, setTasksByDay] = useState({});
+	//fetch tasks
+	function fetchTasks() {
+		const promise = fetch("http://localhost:8000/tasks");
+		return promise;
+	  }
+	  useEffect(() => {
+		fetchTasks()
+		  .then((res) => res.json())
+		  .then((json) => setCharacters(json["users_list"]))
+		  .catch((error) => {
+			console.log(error);
+		  });
+	  }, []);
+	  //create task
+	  function postTask(task) {
+		const promise = fetch("Http://localhost:8000/tasks", {
+		  method: "POST",
+		  headers: {
+			"Content-Type": "application/json"
+		  },
+		  body: JSON.stringify(task)
+		});
+	  
+		return promise;
+	  }
+
+	  function updateTaskList(task) {
+		postTask(task)
+		  .then(() => setCharacters([...characters, task]))
+		  .catch((error) => {
+			console.log(error);
+		  });
+	  }
 
 	function removeOneCharacter(index) {
 		setTasksByDay((prevTasksByDay) => {
