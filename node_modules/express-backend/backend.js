@@ -33,7 +33,7 @@ app.listen(port, () => {
 });
 
 //app to list all tasks
-app.get("/tasks", (req, res) => {
+app.get("/tasks", authenticateUser, (req, res) => {
 	const username = req.username;
 	console.log("the current username is: ", username);
 	console.log("the current creds is: ", creds);
@@ -44,7 +44,7 @@ app.get("/tasks", (req, res) => {
 });
 
 //app to post task
-app.post("/tasks", (req, res) => {
+app.post("/tasks", authenticateUser, (req, res) => {
 	const tasksToAdd = req.body;
 	taskService
 		.addTask(tasksToAdd)
@@ -52,7 +52,7 @@ app.post("/tasks", (req, res) => {
 		.catch((error) => res.status(500).send(error));
 });
 
-app.delete("/tasks/:id", (req, res) => {
+app.delete("/tasks/:id", authenticateUser, (req, res) => {
 	const id = req.params["id"];
 	taskService
 		.deleteTaskById(id)
