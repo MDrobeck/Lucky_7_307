@@ -1,10 +1,11 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-const creds = [];
+export const creds = [];
 
 export function registerUser(req, res) {
 	const { username, pwd } = req.body; // from form
+	const tasks = {}; // empty tasks list in order to save tasks per user
 
 	if (!username || !pwd) {
 		res.status(400).send("Bad request: Invalid input data.");
@@ -18,7 +19,7 @@ export function registerUser(req, res) {
 				generateAccessToken(username).then((token) => {
 					console.log("Token:", token);
 					res.status(201).send({ token: token });
-					creds.push({ username, hashedPassword });
+					creds.push({ username, hashedPassword, tasks });
 				});
 			});
 	}
@@ -57,7 +58,7 @@ export function authenticateUser(req, res, next) {
 				"6b82d531eb46cff8f35435e4e0bc3a34d43d382ad16c57663fbee52f38470dc68c47766ee5f650ba824688da1ec50d28d559e10e57875cdc50e2595ee568facd",
 			(error, decoded) => {
 				if (decoded) {
-					req.username = decoded.username;
+					req.username = decoded.username; // pass username to use in backend
 					next();
 				} else {
 					console.log("JWT error:", error);

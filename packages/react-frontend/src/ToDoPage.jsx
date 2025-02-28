@@ -20,12 +20,24 @@ function ToDoPage({ goToTaskPage }) {
 	const [message, setMessage] = useState("");
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
 
+	function postTask(task, date) {
+		console.log("the date is ", date);
+		const taskWithDate = { ...task, date };
+		const promise = fetch("Http://localhost:8000/tasks", {
+		  method: "POST",
+		  headers: {
+			"Content-Type": "application/json"
+		  },
+		  body: JSON.stringify(taskWithDate)
+		});
+	  
+		return promise;
+	}
+
 	function removeOneCharacter(index) {
 		setTasksByDay((prevTasksByDay) => {
 			// the key
 			const dateString = selectedDate.toDateString();
-			// the list of tasks
-			const currentTasks = prevTasksByDay[dateString];
 			// removes the task
 			const updated = currentTasks.filter((task, i) => {
 				return i !== index;
@@ -38,19 +50,26 @@ function ToDoPage({ goToTaskPage }) {
 		});
 	}
 
-	function updateDict(person) {
-		setTasksByDay((prevTasksByDay) => {
-			// the key
-			const dateString = selectedDate.toDateString();
+	function updateDict(task) {
+		// the key
+		const dateString = selectedDate.toDateString();
+
+		postTask(task, dateString)
+		.then((res) => {if (res.status === 201) return res.json()})
+		.then((json) => {setTasksByDay((prevTasksByDay) => {
+			console.log("this is json", json);
 			// the list of tasks
 			const currentTasks = prevTasksByDay[dateString] || [];
-
 			// adds the tasks to the dict
 			return {
 				...prevTasksByDay,
-				[dateString]: [...currentTasks, person]
+				[dateString]: [...currentTasks, json]
 			};
+		})})
+		.catch((error) => {
+		  console.log(error);
 		});
+		console.log("this is the tasksbyday", tasksByDay);
 	}
 
 	function fetchTasks() {
