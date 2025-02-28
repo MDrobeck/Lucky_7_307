@@ -117,6 +117,7 @@ function ToDoPage({ goToTaskPage }) {
 				res.status === 200 ? res.json() : undefined
 			)
 			.then((json) => {
+				console.log("this is json:", json["tasks_list"]);
 				if (json) {
 					setTasksByDay(json["tasks_list"]);
 				} else {

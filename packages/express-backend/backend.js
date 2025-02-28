@@ -2,6 +2,18 @@ import express from "express";
 import cors from "cors";
 import { registerUser, loginUser, authenticateUser } from "./auth.js";
 import { creds } from "./auth.js";
+import dotenv from "dotenv";
+import mongoose from "mongoose";
+import taskService from "./services/task-service.js";
+
+dotenv.config();
+
+const { MONGO_CONNECTION_STRING } = process.env;
+
+mongoose.set("debug", true);
+mongoose
+  .connect(MONGO_CONNECTION_STRING + "tasks") // connect to Db "users"
+  .catch((error) => console.log(error));
 
 const app = express();
 const port = 8000;
@@ -75,7 +87,10 @@ app.get("/tasks", (req, res) => {
 	const username = req.username;
 	console.log("the current username is: ", username);
 	console.log("the current creds is: ", creds);
-	res.send(tasks);
+	taskService.getTasks()
+		.then(tasks => res.send({ tasks_list: tasks.tasks_list }))
+		.catch(error => res.status(500).send(error));
+	//res.send(tasks);
 });
 
 //app to post task
