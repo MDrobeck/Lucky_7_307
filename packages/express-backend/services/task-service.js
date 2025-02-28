@@ -11,7 +11,7 @@
 
     function addTask(task) {
         return taskModel.findOneAndUpdate(
-          {}, // Empty filter matches the first document (you might want a specific filter)
+          {}, 
           { 
             $push: { 
               [`tasks_list.${task.date}`]: task 

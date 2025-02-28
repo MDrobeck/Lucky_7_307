@@ -85,6 +85,7 @@ function ToDoPage({ goToTaskPage }) {
 				if (res.status === 201) return res.json();
 			})
 			.then((json) => {
+				console.log("this is json", json);
 				setTasksByDay((prevTasksByDay) => {
 					// the list of tasks
 					const currentTasks =

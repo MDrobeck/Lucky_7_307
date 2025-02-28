@@ -84,9 +84,11 @@ app.get("/tasks", (req, res) => {
 //app to post task
 app.post("/tasks", (req, res) => {
 	const taskToAdd = req.body;
-	console.log("the body is ", taskToAdd);
 	taskService.addTask(taskToAdd)
-		.then(addedTask => res.status(201).send(addedTask))
+		// findOneAndUpdate returns the entire document, so we have to filter it to the list on the
+		// date key, and then grab the last added...
+		.then(addedTask => res.status(201).send(
+			addedTask.tasks_list.get(taskToAdd.date)[addedTask.tasks_list.get(taskToAdd.date).length - 1]))
 		.catch(error => res.status(500).send(error));
 });
 
