@@ -12,8 +12,8 @@ const { MONGO_CONNECTION_STRING } = process.env;
 
 mongoose.set("debug", true);
 mongoose
-  .connect(MONGO_CONNECTION_STRING + "tasks") // connect to Db "tasks"
-  .catch((error) => console.log(error));
+	.connect(MONGO_CONNECTION_STRING + "tasks") // connect to Db "tasks"
+	.catch((error) => console.log(error));
 
 const app = express();
 const port = 8000;
@@ -37,22 +37,27 @@ app.get("/tasks", (req, res) => {
 	const username = req.username;
 	console.log("the current username is: ", username);
 	console.log("the current creds is: ", creds);
-	taskService.getTasks()
-		.then(tasks => res.send({ tasks_list: tasks }))
-		.catch(error => res.status(500).send(error));
+	taskService
+		.getTasks()
+		.then((tasks) => res.send({ tasks_list: tasks }))
+		.catch((error) => res.status(500).send(error));
 });
 
 //app to post task
 app.post("/tasks", (req, res) => {
 	const tasksToAdd = req.body;
-	taskService.addTask(tasksToAdd)
-	  .then(addedTask => res.status(201).send(addedTask))
-	  .catch(error => res.status(500).send(error));
+	taskService
+		.addTask(tasksToAdd)
+		.then((addedTask) => res.status(201).send(addedTask))
+		.catch((error) => res.status(500).send(error));
 });
 
 app.delete("/tasks/:id", (req, res) => {
 	const id = req.params["id"];
-	taskService.deleteTaskById(id)
-		.then(deletedUser => {res.status(204).send(deletedUser)})
-		.catch(error => res.status(500).send(error));
+	taskService
+		.deleteTaskById(id)
+		.then((deletedUser) => {
+			res.status(204).send(deletedUser);
+		})
+		.catch((error) => res.status(500).send(error));
 });

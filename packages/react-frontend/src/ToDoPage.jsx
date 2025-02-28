@@ -22,19 +22,7 @@ function ToDoPage({ goToTaskPage }) {
 
 	function postTask(task) {
 		const promise = fetch("Http://localhost:8000/tasks", {
-		  method: "POST",
-		  headers: {
-			"Content-Type": "application/json"
-		  },
-		  body: JSON.stringify(task)
-		});
-	  
-		return promise;
-	}
-
-	function deleteTask(task) {
-		const promise = fetch("Http://localhost:8000/tasks/" + task._id, {
-			method: "DELETE",
+			method: "POST",
 			headers: {
 				"Content-Type": "application/json"
 			},
@@ -44,32 +32,55 @@ function ToDoPage({ goToTaskPage }) {
 		return promise;
 	}
 
+	function deleteTask(task) {
+		const promise = fetch(
+			"Http://localhost:8000/tasks/" + task._id,
+			{
+				method: "DELETE",
+				headers: {
+					"Content-Type": "application/json"
+				},
+				body: JSON.stringify(task)
+			}
+		);
+
+		return promise;
+	}
+
 	function removeOneCharacter(index) {
-		const task = tasksByDay[index]
+		const task = tasksByDay[index];
 		const updated = tasksByDay.filter((task, i) => {
-		  return i !== index;
+			return i !== index;
 		});
 		deleteTask(task)
-		  .then((res) => {if (res.status === 204) setTasksByDay(updated)})
-		  .catch((error) => {
-			console.log(error);
-		  });
-	  }
+			.then((res) => {
+				if (res.status === 204) setTasksByDay(updated);
+			})
+			.catch((error) => {
+				console.log(error);
+			});
+	}
 
 	function filterTasksByDate(taskList, targetDate) {
 		console.log("this is the targetDate", targetDate);
-		const filteredTasks = taskList.tasks_list.filter(task => task.date === targetDate);
+		const filteredTasks = taskList.tasks_list.filter(
+			(task) => task.date === targetDate
+		);
 		return filteredTasks;
 	}
 
 	function updateTasks(task) {
 		console.log("this is task in update", task);
 		postTask(task)
-			.then((res) => {if (res.status === 201) return res.json()})
-			.then((json) => {setTasksByDay([...tasksByDay, json])})
+			.then((res) => {
+				if (res.status === 201) return res.json();
+			})
+			.then((json) => {
+				setTasksByDay([...tasksByDay, json]);
+			})
 			.catch((error) => {
-			console.log(error);
-		});
+				console.log(error);
+			});
 	}
 
 	function fetchTasks() {
@@ -88,7 +99,9 @@ function ToDoPage({ goToTaskPage }) {
 			)
 			.then((json) => {
 				if (json) {
-					setTasksByDay(filterTasksByDate(json, date.toDateString()));
+					setTasksByDay(
+						filterTasksByDate(json, date.toDateString())
+					);
 				} else {
 					setTasksByDay([]);
 				}
@@ -105,7 +118,12 @@ function ToDoPage({ goToTaskPage }) {
 			)
 			.then((json) => {
 				if (json) {
-					setTasksByDay(filterTasksByDate(json, selectedDate.toDateString()));
+					setTasksByDay(
+						filterTasksByDate(
+							json,
+							selectedDate.toDateString()
+						)
+					);
 				} else {
 					setTasksByDay([]);
 				}
@@ -214,14 +232,15 @@ function ToDoPage({ goToTaskPage }) {
 								/>
 								<h1>Todo List</h1>
 								<Table
-									characterData={
-										tasksByDay
-									}
+									characterData={tasksByDay}
 									removeCharacter={
 										removeOneCharacter
 									}
 								/>
-								<Form handleSubmit={updateTasks} date={selectedDate}/>
+								<Form
+									handleSubmit={updateTasks}
+									date={selectedDate}
+								/>
 								<ul>
 									<li>
 										<img
