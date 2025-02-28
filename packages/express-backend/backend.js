@@ -1,7 +1,6 @@
 import express from "express";
 import cors from "cors";
 import { registerUser, loginUser, authenticateUser } from "./auth.js";
-import { creds } from "./auth.js";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 import taskService from "./services/task-service.js";
@@ -36,7 +35,6 @@ app.listen(port, () => {
 app.get("/tasks", authenticateUser, (req, res) => {
 	const username = req.username;
 	console.log("the current username is: ", username);
-	console.log("the current creds is: ", creds);
 	taskService
 		.getTasks()
 		.then((tasks) => res.send({ tasks_list: tasks }))
@@ -59,5 +57,14 @@ app.delete("/tasks/:id", authenticateUser, (req, res) => {
 		.then((deletedUser) => {
 			res.status(204).send(deletedUser);
 		})
+		.catch((error) => res.status(500).send(error));
+});
+
+// adding users to mongo.
+app.post("/users", (req, res) => {
+	const userToAdd = req.body;
+	userService
+		.addUser(userToAdd)
+		.then((addedUser) => res.status(201).send(addedUser))
 		.catch((error) => res.status(500).send(error));
 });

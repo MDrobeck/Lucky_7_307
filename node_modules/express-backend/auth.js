@@ -1,15 +1,25 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import userService from "./services/user-service.js";
 
-export const creds = [];
+// adds users to mongo
+function postUser(userToAdd) {
+	userService
+		.addUser(userToAdd)
+		.then((res) => {if (res.status === 201) return userToAdd})
+		.catch((error) => res.status(500).send(error));
+}
+
+function findUser(name) {
+	return userService.findUserByName(name);
+}
 
 export function registerUser(req, res) {
 	const { username, pwd } = req.body; // from form
-	const tasks = {}; // empty tasks list in order to save tasks per user
 
 	if (!username || !pwd) {
 		res.status(400).send("Bad request: Invalid input data.");
-	} else if (creds.find((c) => c.username === username)) {
+	} else if (findUser(username).then((existingUser) => {if (existingUser) {true} else {false}})) {
 		res.status(409).send("Username already taken");
 	} else {
 		bcrypt
@@ -19,7 +29,8 @@ export function registerUser(req, res) {
 				generateAccessToken(username).then((token) => {
 					console.log("Token:", token);
 					res.status(201).send({ token: token });
-					creds.push({ username, hashedPassword, tasks });
+					//creds.push({ username, hashedPassword });
+					postUser({ username, hashedPassword });
 				});
 			});
 	}
@@ -70,28 +81,31 @@ export function authenticateUser(req, res, next) {
 }
 
 export function loginUser(req, res) {
-	const { username, pwd } = req.body; // from form
-	const retrievedUser = creds.find((c) => c.username === username);
-
-	if (!retrievedUser) {
-		// invalid username
-		res.status(401).send("Unauthorized");
-	} else {
-		bcrypt
-			.compare(pwd, retrievedUser.hashedPassword)
-			.then((matched) => {
-				if (matched) {
-					generateAccessToken(username).then((token) => {
-						res.status(200).send({ token: token });
-						console.log("sent token: ", token);
-					});
-				} else {
-					// invalid password
-					res.status(401).send("Unauthorized");
-				}
-			})
-			.catch(() => {
-				res.status(401).send("Unauthorized");
-			});
-	}
+    const { username, pwd } = req.body;
+    findUser(username)
+        .then((retrievedUser) => {
+            if (!retrievedUser) {
+                res.status(401).send("Unauthorized");
+            } else {
+                bcrypt.compare(pwd, retrievedUser.hashedPassword)
+                    .then((matched) => {
+                        if (matched) {
+                            generateAccessToken(username)
+                                .then((token) => {
+                                    res.status(200).send({ token: token });
+                                });
+                        } else {
+                            res.status(401).send("Unauthorized");
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Error comparing passwords:", error);
+                        res.status(500).send("Internal server error");
+                    });
+            }
+        })
+        .catch((error) => {
+            console.error("Error finding user:", error);
+            res.status(500).send("Internal server error");
+        });
 }
