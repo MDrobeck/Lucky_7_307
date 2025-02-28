@@ -5,26 +5,22 @@
 
     function getTasks() {
     let promise;
-    promise = taskModel.findOne();
+    promise = taskModel.find();
     return promise;
     }
 
     function addTask(task) {
-        return taskModel.findOneAndUpdate(
-          {}, 
-          { 
-            $push: { 
-              [`tasks_list.${task.date}`]: task 
-            } 
-          },
-          { 
-            upsert: true,    // Create document if it doesn't exist
-            new: true        // Return the modified document
-          }
-        );
-      }
+        const taskToAdd = new taskModel(task);
+        const promise = taskToAdd.save();
+        return promise;
+    }
+
+    function deleteTaskById(id) {
+        return taskModel.findByIdAndDelete(id);
+    }
 
     export default {
     addTask,
     getTasks,
+    deleteTaskById
     };

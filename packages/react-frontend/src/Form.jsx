@@ -3,7 +3,8 @@ import React, { useState } from "react";
 function Form(props) {
 	const [person, setPerson] = useState({
 		time: "",
-		task: ""
+		task: "",
+		date: ""
 	});
 	function handleChange(event) {
 		const { name, value } = event.target;
@@ -13,8 +14,12 @@ function Form(props) {
 	}
 
 	function submitForm() {
-		props.handleSubmit(person);
-		setPerson({ time: "", task: "" });
+		const taskWithDate = {
+			...person, 
+			date: props.date.toDateString()
+		};
+		props.handleSubmit(taskWithDate);
+		setPerson({ time: "", task: "", date: "" });
 	}
 
 	return (

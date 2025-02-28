@@ -13,29 +13,27 @@ import Login from "./Login.jsx";
 function ToDoPage({ goToTaskPage }) {
 	const [selectedDate, setSelectedDate] = useState(new Date());
 
-	const [tasksByDay, setTasksByDay] = useState({});
+	const [tasksByDay, setTasksByDay] = useState([]);
 
 	const INVALID_TOKEN = "INVALID_TOKEN";
 	const [token, setToken] = useState(INVALID_TOKEN);
 	const [message, setMessage] = useState("");
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-	function postTask(task, date) {
-		console.log("the date is ", date);
-		const taskWithDate = { ...task, date };
+	function postTask(task) {
 		const promise = fetch("Http://localhost:8000/tasks", {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json"
-			},
-			body: JSON.stringify(taskWithDate)
+		  method: "POST",
+		  headers: {
+			"Content-Type": "application/json"
+		  },
+		  body: JSON.stringify(task)
 		});
-
+	  
 		return promise;
 	}
 
 	function deleteTask(task) {
-		const promise = fetch("Http://localhost:8000/tasks", {
+		const promise = fetch("Http://localhost:8000/tasks/" + task._id, {
 			method: "DELETE",
 			headers: {
 				"Content-Type": "application/json"
@@ -47,60 +45,31 @@ function ToDoPage({ goToTaskPage }) {
 	}
 
 	function removeOneCharacter(index) {
-		const dateString = selectedDate.toDateString();
-		const currentTasks = tasksByDay[dateString] || [];
-		const taskToDelete = currentTasks[index];
+		const task = tasksByDay[index]
+		const updated = tasksByDay.filter((task, i) => {
+		  return i !== index;
+		});
+		deleteTask(task)
+		  .then((res) => {if (res.status === 204) setTasksByDay(updated)})
+		  .catch((error) => {
+			console.log(error);
+		  });
+	  }
 
-		if (!taskToDelete) return;
-
-		deleteTask(taskToDelete)
-			.then((res) => {
-				if (res.status === 204) {
-					setTasksByDay((prevTasksByDay) => {
-						const prevTasks =
-							prevTasksByDay[dateString] || [];
-						const updatedTasks = prevTasks.filter(
-							(_, i) => i !== index
-						);
-						return {
-							...prevTasksByDay,
-							[dateString]: updatedTasks
-						};
-					});
-				} else {
-					console.error("Failed to delete task");
-				}
-			})
-			.catch((error) => {
-				console.error("Error deleting task:", error);
-			});
+	function filterTasksByDate(taskList, targetDate) {
+		console.log("this is the targetDate", targetDate);
+		const filteredTasks = taskList.tasks_list.filter(task => task.date === targetDate);
+		return filteredTasks;
 	}
 
 	function updateDict(task) {
-		// the key
-		const dateString = selectedDate.toDateString();
-
-		postTask(task, dateString)
-			.then((res) => {
-				if (res.status === 201) return res.json();
-			})
-			.then((json) => {
-				console.log("this is json", json);
-				setTasksByDay((prevTasksByDay) => {
-					// the list of tasks
-					const currentTasks =
-						prevTasksByDay[dateString] || [];
-					// adds the tasks to the dict
-					return {
-						...prevTasksByDay,
-						[dateString]: [...currentTasks, json]
-					};
-				});
-			})
+		console.log("this is task in update", task);
+		postTask(task)
+			.then((res) => {if (res.status === 201) return res.json()})
+			.then((json) => {setTasksByDay([...tasksByDay, json])})
 			.catch((error) => {
-				console.log(error);
-			});
-		console.log("this is the tasksbyday", tasksByDay);
+			console.log(error);
+		});
 	}
 
 	function fetchTasks() {
@@ -111,6 +80,23 @@ function ToDoPage({ goToTaskPage }) {
 		return promise;
 	}
 
+	const handleDateSelection = (date) => {
+		setSelectedDate(date);
+		fetchTasks()
+			.then((res) =>
+				res.status === 200 ? res.json() : undefined
+			)
+			.then((json) => {
+				if (json) {
+					setTasksByDay(filterTasksByDate(json, date.toDateString()));
+				} else {
+					setTasksByDay([]);
+				}
+			});
+		console.log("this is the tasks", tasksByDay);
+		console.log("this is the date", selectedDate);
+	};
+
 	useEffect(() => {
 		console.log("useEffect is running. Current token:", token);
 		fetchTasks()
@@ -118,11 +104,10 @@ function ToDoPage({ goToTaskPage }) {
 				res.status === 200 ? res.json() : undefined
 			)
 			.then((json) => {
-				console.log("this is json:", json["tasks_list"]);
 				if (json) {
-					setTasksByDay(json["tasks_list"]);
+					setTasksByDay(filterTasksByDate(json, selectedDate.toDateString()));
 				} else {
-					setTasksByDay({});
+					setTasksByDay([]);
 				}
 			});
 	}, [token]);
@@ -225,20 +210,18 @@ function ToDoPage({ goToTaskPage }) {
 						isLoggedIn ? (
 							<div className="container">
 								<HorizontalCalendar
-									onDateSelect={setSelectedDate}
+									onDateSelect={handleDateSelection}
 								/>
 								<h1>Todo List</h1>
 								<Table
 									characterData={
-										tasksByDay[
-											selectedDate.toDateString()
-										] || []
+										tasksByDay
 									}
 									removeCharacter={
 										removeOneCharacter
 									}
 								/>
-								<Form handleSubmit={updateDict} />
+								<Form handleSubmit={updateDict} date={selectedDate}/>
 								<ul>
 									<li>
 										<img
