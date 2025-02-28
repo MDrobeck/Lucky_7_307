@@ -12,7 +12,7 @@ const { MONGO_CONNECTION_STRING } = process.env;
 
 mongoose.set("debug", true);
 mongoose
-  .connect(MONGO_CONNECTION_STRING + "tasks") // connect to Db "users"
+  .connect(MONGO_CONNECTION_STRING + "tasks") // connect to Db "tasks"
   .catch((error) => console.log(error));
 
 const app = express();
@@ -63,17 +63,6 @@ const removeTask = (task) => {
 	);
 };
 
-//finding task by name
-const findTaskByName = (name) => {
-	return tasks["task_list"].filter(
-		(user) => user["task_name"] === name
-	);
-};
-
-const generateID = () => {
-	return Math.random();
-};
-
 //authenticate
 app.post("/signup", registerUser);
 app.post("/login", loginUser);
@@ -90,15 +79,15 @@ app.get("/tasks", (req, res) => {
 	taskService.getTasks()
 		.then(tasks => res.send({ tasks_list: tasks.tasks_list }))
 		.catch(error => res.status(500).send(error));
-	//res.send(tasks);
 });
 
 //app to post task
 app.post("/tasks", (req, res) => {
 	const taskToAdd = req.body;
 	console.log("the body is ", taskToAdd);
-	const addedTask = addTask(taskToAdd);
-	res.status(201).send(addedTask);
+	taskService.addTask(taskToAdd)
+		.then(addedTask => res.status(201).send(addedTask))
+		.catch(error => res.status(500).send(error));
 });
 
 app.delete("/tasks", (req, res) => {

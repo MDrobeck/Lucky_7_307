@@ -9,29 +9,22 @@
     return promise;
     }
 
-    function addUser(user) {
-    const userToAdd = new taskModel(user);
-    const promise = userToAdd.save();
-    return promise;
-    }
-
-    function findUserByName(name) {
-    return taskModel.find({ name: name });
-    }
-
-    function findUserByJob(job) {
-    return taskModel.find({ job: job });
-    }
-
-    function findUserByJobAndName(name, job) {
-    return taskModel.find({name: name, job: job});
-    }
-
-    function deleteUserById(id) {
-    return taskModel.findByIdAndDelete(id);
-    }
+    function addTask(task) {
+        return taskModel.findOneAndUpdate(
+          {}, // Empty filter matches the first document (you might want a specific filter)
+          { 
+            $push: { 
+              [`tasks_list.${task.date}`]: task 
+            } 
+          },
+          { 
+            upsert: true,    // Create document if it doesn't exist
+            new: true        // Return the modified document
+          }
+        );
+      }
 
     export default {
-    addUser,
+    addTask,
     getTasks,
     };
