@@ -36,7 +36,7 @@ app.get("/tasks", authenticateUser, (req, res) => {
 	const username = req.username;
 	console.log("the current username is: ", username);
 	taskService
-		.getTasks()
+		.getTasks(username)
 		.then((tasks) => res.send({ tasks_list: tasks }))
 		.catch((error) => res.status(500).send(error));
 });
@@ -44,8 +44,9 @@ app.get("/tasks", authenticateUser, (req, res) => {
 //app to post task
 app.post("/tasks", authenticateUser, (req, res) => {
 	const tasksToAdd = req.body;
+	const username = req.username;
 	taskService
-		.addTask(tasksToAdd)
+		.addTask(tasksToAdd, username)
 		.then((addedTask) => res.status(201).send(addedTask))
 		.catch((error) => res.status(500).send(error));
 });

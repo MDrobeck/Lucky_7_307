@@ -58,6 +58,7 @@ export function authenticateUser(req, res, next) {
 	const authHeader = req.headers["authorization"];
 	//Getting the 2nd part of the auth header (the token)
 	const token = authHeader && authHeader.split(" ")[1];
+	console.log("this is token", token)
 
 	if (!token) {
 		console.log("No token received");

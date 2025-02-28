@@ -23,9 +23,9 @@ function ToDoPage({ goToTaskPage }) {
 	function postTask(task) {
 		const promise = fetch("Http://localhost:8000/tasks", {
 			method: "POST",
-			headers: {
+			headers: addAuthHeader({
 				"Content-Type": "application/json"
-			},
+			}), 
 			body: JSON.stringify(task)
 		});
 
@@ -37,9 +37,9 @@ function ToDoPage({ goToTaskPage }) {
 			"Http://localhost:8000/tasks/" + task._id,
 			{
 				method: "DELETE",
-				headers: {
+				headers: addAuthHeader({
 					"Content-Type": "application/json"
-				},
+				}),
 				body: JSON.stringify(task)
 			}
 		);

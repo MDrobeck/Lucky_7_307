@@ -3,14 +3,25 @@ import taskModel from "../models/tasks.js";
 
 mongoose.set("debug", true);
 
-function getTasks() {
+function getTasks(name) {
 	let promise;
-	promise = taskModel.find();
+	promise = taskModel.find({ username: name });
 	return promise;
 }
 
-function addTask(task) {
-	const taskToAdd = new taskModel(task);
+function addTask(task, username) {
+    const newTask = {
+		time: "",
+		task: "",
+		date: "",
+        username: ""
+	}
+    newTask.time = task.time;
+    newTask.task = task.task;
+    newTask.date = task.date;
+    newTask.username = username;
+    console.log("this is newTask", newTask);
+	const taskToAdd = new taskModel(newTask);
 	const promise = taskToAdd.save();
 	return promise;
 }
