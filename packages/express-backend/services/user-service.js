@@ -14,11 +14,11 @@ function deleteUserById(id) {
 }
 
 function findUserByName(name) {
-    return authModel.findOne({ username: name })
+	return authModel.findOne({ username: name });
 }
 
 export default {
 	addUser,
 	deleteUserById,
-    findUserByName
+	findUserByName
 };

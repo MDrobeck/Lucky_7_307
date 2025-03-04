@@ -25,7 +25,7 @@ function ToDoPage({ goToTaskPage }) {
 			method: "POST",
 			headers: addAuthHeader({
 				"Content-Type": "application/json"
-			}), 
+			}),
 			body: JSON.stringify(task)
 		});
 
@@ -282,6 +282,7 @@ function ToDoPage({ goToTaskPage }) {
 						<Login
 							handleSubmit={signupUser}
 							buttonLabel="Sign Up"
+							buttonLabel2="Log In"
 						/>
 					}
 				/>
