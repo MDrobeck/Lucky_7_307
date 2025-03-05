@@ -11,7 +11,7 @@ import {
 import Login from "./Login.jsx";
 
 function ToDoPage({ goToTaskPage }) {
-	const [selectedDate, setSelectedDate] = useState(new Date());
+	const [selectedDate, setSelectedDate] = useState(new Date().toLocaleDateString());
 
 	const [tasksByDay, setTasksByDay] = useState([]);
 
@@ -92,7 +92,10 @@ function ToDoPage({ goToTaskPage }) {
 	}
 
 	const handleDateSelection = (date) => {
-		setSelectedDate(date);
+		// this sets it to mm/dd/yyyy format
+		const dateString = date.toLocaleDateString();
+		console.log("this is the date: ", dateString)
+		setSelectedDate(dateString);
 		fetchTasks()
 			.then((res) =>
 				res.status === 200 ? res.json() : undefined
@@ -100,7 +103,7 @@ function ToDoPage({ goToTaskPage }) {
 			.then((json) => {
 				if (json) {
 					setTasksByDay(
-						filterTasksByDate(json, date.toDateString())
+						filterTasksByDate(json, dateString)
 					);
 				} else {
 					setTasksByDay([]);
@@ -121,7 +124,7 @@ function ToDoPage({ goToTaskPage }) {
 					setTasksByDay(
 						filterTasksByDate(
 							json,
-							selectedDate.toDateString()
+							selectedDate
 						)
 					);
 				} else {

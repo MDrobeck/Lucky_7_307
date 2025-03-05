@@ -16,7 +16,7 @@ function Form(props) {
 	function submitForm() {
 		const taskWithDate = {
 			...person,
-			date: props.date.toDateString()
+			date: props.date
 		};
 		props.handleSubmit(taskWithDate);
 		setPerson({ time: "", task: "", date: "" });
