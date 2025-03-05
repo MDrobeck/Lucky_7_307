@@ -12,6 +12,11 @@ function TableHeader() {
 }
 
 function TableBody(props) {
+	console.log("characterData:", props.characterData);
+
+	if (props.characterData === null) {
+		return <caption>Data Unavailable</caption>;
+	}
 	const rows = props.characterData.map((row, index) => {
 		return (
 			<tr key={index}>
