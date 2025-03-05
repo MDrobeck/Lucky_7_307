@@ -369,6 +369,7 @@ let availableWorkHours = {
 let result = processTasks(tasks, availableWorkHours);
 console.log(JSON.stringify(result, null, 2));
 */
+/*
 class Task {
     constructor(name, timeHours, startDate, dueDate) {
         this.name = name;
@@ -605,4 +606,215 @@ function processData(data) {
 }
 const final = processData(result);
 console.log(final);
+console.log(JSON.stringify(final, null, 2));*/
+class Task {
+    constructor(name, timeHours, startDate, dueDate) {
+        const currentYear = new Date().getFullYear();
+        this.name = name;
+        this.timeHours = timeHours;
+        this.startDate = `${startDate}/${currentYear}`; // Format: "MM/DD/YYYY"
+        this.dueDate = `${dueDate}/${currentYear}`;     // Format: "MM/DD/YYYY"
+    }
+}
+
+function processTasks(taskList, availableWorkHours) {
+    if (taskList.length === 0) {
+        console.log("No tasks available.");
+        return [];
+    }
+
+    let result = [];
+    let earliestStart = taskList[0].startDate;
+    let latestDue = taskList[0].dueDate;
+
+    for (let task of taskList) {
+        if (compareDates(task.startDate, earliestStart) < 0) {
+            earliestStart = task.startDate;
+        }
+        if (compareDates(task.dueDate, latestDue) > 0) {
+            latestDue = task.dueDate;
+        }
+    }
+
+    let startDate = new Date(earliestStart);
+    let endDate = new Date(latestDue);
+
+    for (let date = new Date(startDate); date <= endDate; date.setDate(date.getDate() + 1)) {
+        let currentDay = getCurrentDay(date);
+        let availableHours = availableWorkHours[currentDay] || 0;
+
+        let prioritizedTasks = prioritize(taskList, currentDay);
+        let assignmentsForDay = [];
+
+        for (let task of prioritizedTasks) {
+            if (task.timeHours <= 0) continue;
+
+            let hoursToAssign = 0;
+            if (task.priority === 1) {
+                hoursToAssign = Math.min(task.timeHours, availableHours);
+            } else if (task.priority > 0.5) {
+                hoursToAssign = Math.min(2, availableHours);
+            } else if (task.priority > 0) {
+                hoursToAssign = Math.min(1, availableHours);
+            }
+
+            if (hoursToAssign > 0) {
+                availableHours -= hoursToAssign;
+                task.timeHours -= hoursToAssign;
+
+                let taskIndex = taskList.findIndex(t => t.name.trim() === task.name.trim());
+                if (taskIndex !== -1) {
+                    taskList[taskIndex].timeHours = task.timeHours;
+                } else {
+                    console.error(`Task with name ${task.name} not found in taskList.`);
+                }
+
+                assignmentsForDay.push({ name: task.name, timeSpent: hoursToAssign });
+            }
+
+            if (availableHours <= 0) break;
+        }
+
+        result.push({
+            day: currentDay,
+            assignments: assignmentsForDay
+        });
+    }
+
+    return result;
+}
+
+function compareDates(date1, date2) {
+    return new Date(date1) - new Date(date2);
+}
+
+// Returns the date in MM/DD/YYYY format
+function getCurrentDay(date) {
+    let month = String(date.getMonth() + 1).padStart(2, '0');
+    let day = String(date.getDate()).padStart(2, '0');
+    let year = date.getFullYear();
+    return `${month}/${day}/${year}`;
+}
+
+function prioritize(taskList, currentDay) {
+    let prioritizedList = taskList.map(task => {
+        let priority = 0;
+        let currentDate = new Date(currentDay);
+        let startDate = new Date(task.startDate);
+        let dueDate = new Date(task.dueDate);
+
+        if (compareDates(task.startDate, currentDay) > 0) {
+            priority = 0;
+        } else if (compareDates(task.dueDate, currentDay) === 0) {
+            priority = 1;
+        } else {
+            let remainingHours = task.timeHours;
+            let daysUntilDueDate = Math.floor((dueDate - currentDate) / (1000 * 60 * 60 * 24));
+            priority = remainingHours / (remainingHours + daysUntilDueDate);
+        }
+        
+        return { ...task, priority };
+    });
+
+    return prioritizedList;
+}
+
+// Example tasks
+let tasks = [
+    new Task('Project A', 10, '02/04', '02/20'),
+    new Task('Report Writing', 5, '02/03', '03/15'),
+];
+
+let availableWorkHours = {
+    '02/01/2025': 8,
+    '02/02/2025': 8,
+    '02/03/2025': 8,
+    '02/04/2025': 6,
+    '02/05/2025': 7,
+    '02/06/2025': 5,
+    '02/07/2025': 8,
+    '02/08/2025': 8,
+    '02/09/2025': 8,
+    '02/10/2025': 6,
+    '02/11/2025': 7,
+    '02/12/2025': 8,
+    '02/13/2025': 6,
+    '02/14/2025': 8,
+    '02/15/2025': 7,
+    '02/16/2025': 8,
+    '02/17/2025': 6,
+    '02/18/2025': 8,
+    '02/19/2025': 7,
+    '02/20/2025': 8
+};
+
+// Process tasks
+let result = processTasks(tasks, availableWorkHours);
+console.log(JSON.stringify(result, null, 2));
+
+function scheduleTasks(tasks, availableTimes) {
+    let schedule = [];
+    let taskIndex = 0;
+    let timeIndex = 0;
+    let remainingTaskTime = tasks[taskIndex].timeSpent;
+
+    let availability = availableTimes.map(range => {
+        let [start, end] = range.split('-').map(time => {
+            let [hours, minutes] = time.split(':').map(Number);
+            return hours + minutes / 60;
+        });
+        return [start, end];
+    });
+
+    while (taskIndex < tasks.length && timeIndex < availability.length) {
+        let [start, end] = availability[timeIndex];
+        let availableTime = end - start;
+
+        let allocatedTime = Math.min(remainingTaskTime, availableTime);
+        let startTime = `${Math.floor(start)}:${String((start % 1) * 60).padStart(2, '0')}`;
+        let endTime = `${Math.floor(start + allocatedTime)}:${String(((start + allocatedTime) % 1) * 60).padStart(2, '0')}`;
+
+        schedule.push({ Task: tasks[taskIndex].name, Time: `${startTime}-${endTime}` });
+
+        remainingTaskTime -= allocatedTime;
+        if (remainingTaskTime === 0) {
+            taskIndex++;
+            if (taskIndex < tasks.length) {
+                remainingTaskTime = tasks[taskIndex].timeSpent;
+            } else {
+                break;
+            }
+        }
+
+        if (allocatedTime < availableTime) {
+            availability[timeIndex] = [start + allocatedTime, end];
+        } else {
+            timeIndex++;
+        }
+    }
+
+    return schedule;
+}
+
+let gaps = ['08:00-13:00', '14:00-18:00'];
+
+function processData(data) {
+    let readyList = [];
+    for (let i = 0; i < data.length; i++) {
+        let assignments = data[i].assignments;
+
+        if (assignments.length > 0) {
+            let scheduledTasks = scheduleTasks(assignments, gaps);
+
+            readyList.push({
+                day: data[i].day, 
+                scheduledTasks
+            });
+        }
+    }
+
+    return readyList;
+}
+
+const final = processData(result);
 console.log(JSON.stringify(final, null, 2));
