@@ -34,19 +34,10 @@ function TaskPage({ goToToDoPage }) {
 						width: "40px",
 						height: "40px",
 						borderRadius: "50%",
-						backgroundColor: "#f0f0f0"
 					}}>
 					<img className="icon" 
 					src="src/assets/home.svg"
 					alt="Home"
-					/>
-				</li>
-
-				<li>
-					<img
-						className="icon"
-						src="src/assets/table.svg"
-						alt="Table"
 					/>
 				</li>
 			</ul>

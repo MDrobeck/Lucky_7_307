@@ -155,6 +155,7 @@ sup {
  */
 img {
 	border-style: none;
+	background-color: white;
 }
 img.icon {
 	height: 2em;
@@ -168,7 +169,10 @@ img.icon {
  * 2. Remove the margin in Firefox and Safari.
  */
 button,
-input,
+input {
+	color: white
+}
+
 optgroup,
 select,
 textarea {

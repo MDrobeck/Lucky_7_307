@@ -67,7 +67,6 @@ const HorizontalCalendar = ({ onDateSelect }) => {
                 padding: "10px 0",
             }}
         >
-            
             <div
                 className="contentBox"
                 style={{
@@ -84,7 +83,7 @@ const HorizontalCalendar = ({ onDateSelect }) => {
                     color: "white",
                     fontSize: "16px",
                     cursor: "pointer"
-                }}>Last</button>
+                }}>&lt;</button>
                 {dates.map((date, index) => (
                     <div
                         key={index}
@@ -129,14 +128,14 @@ const HorizontalCalendar = ({ onDateSelect }) => {
                         </div>
                     </div>
                 ))}
-                <button onClick={handlePreviousWeek}
+                <button onClick={handleNextWeek}
                 style={{
                     backgroundColor: "transparent",
                     border: "none",
                     color: "white",
                     fontSize: "16px",
                     cursor: "pointer"
-                }}>Next</button>
+                }}>&gt;</button>
             </div>
         </div>
     );

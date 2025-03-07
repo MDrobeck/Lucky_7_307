@@ -234,7 +234,7 @@ function ToDoPage({ goToTaskPage }) {
 					element={
 						isLoggedIn ? (
 							<div className="container">
-								<h1 style={{ textAlign: "center", marginBottom: "1rem", color: "white" }}>
+								<h1 style={{ textAlign: "center", marginTop: "10rem", color: "white" }}>
 									{formatCurrentMonth(selectedDate)}
 								</h1>
 								<HorizontalCalendar
@@ -252,13 +252,6 @@ function ToDoPage({ goToTaskPage }) {
 									date={selectedDate}
 								/>
 								<ul>
-									<li>
-										<img
-											class="icon"
-											src="src/assets/home.svg"
-											alt="Home"
-										></img>
-									</li>
 									<li
 										onClick={goToTaskPage} // Navigate to task page
 										style={{
@@ -269,7 +262,6 @@ function ToDoPage({ goToTaskPage }) {
 											width: "40px",
 											height: "40px",
 											borderRadius: "50%",
-											backgroundColor: "#f0f0f0"
 										}}
 									>
 										<img
