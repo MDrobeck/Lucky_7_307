@@ -20,6 +20,13 @@ function ToDoPage({ goToTaskPage }) {
 	const [message, setMessage] = useState("");
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
 
+	const formatCurrentMonth = (date) => {
+		return new Intl.DateTimeFormat("en-US", {
+			month: "long"
+		}).format(date);
+	};
+
+
 	function postTask(task) {
 		const promise = fetch("Http://localhost:8000/tasks", {
 			method: "POST",
@@ -227,6 +234,9 @@ function ToDoPage({ goToTaskPage }) {
 					element={
 						isLoggedIn ? (
 							<div className="container">
+								<h2 style={{ textAlign: "center", marginBottom: "1rem" }}>
+									{formatCurrentMonth(selectedDate)}
+								</h2>
 								<HorizontalCalendar
 									onDateSelect={handleDateSelection}
 								/>
