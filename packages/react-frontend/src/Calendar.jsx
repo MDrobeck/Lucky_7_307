@@ -49,7 +49,17 @@ const HorizontalCalendar = ({ onDateSelect }) => {
         setDates(newDates);
     };
 
+    const isToday = (date) => {
+        const today = new Date();
+        return (
+            date.getDate() === today.getDate() &&
+            date.getMonth() === today.getMonth() &&
+            date.getFullYear() === today.getFullYear()
+        );
+    };
+
     return (
+        
         <div
             className="container"
             style={{
@@ -57,10 +67,7 @@ const HorizontalCalendar = ({ onDateSelect }) => {
                 padding: "10px 0",
             }}
         >
-            <div className="buttonContainer" style={{ display: "flex", justifyContent: "space-between", padding: "0 20px", marginBottom: "10px" }}>
-                <button onClick={handlePreviousWeek}>Previous Week</button>
-                <button onClick={handleNextWeek}>Next Week</button>
-            </div>
+            
             <div
                 className="contentBox"
                 style={{
@@ -70,6 +77,14 @@ const HorizontalCalendar = ({ onDateSelect }) => {
                     overflowX: "hidden",
                 }}
             >
+                <button onClick={handlePreviousWeek}
+                style={{
+                    backgroundColor: "transparent",
+                    border: "none",
+                    color: "white",
+                    fontSize: "16px",
+                    cursor: "pointer"
+                }}>Last</button>
                 {dates.map((date, index) => (
                     <div
                         key={index}
@@ -77,34 +92,54 @@ const HorizontalCalendar = ({ onDateSelect }) => {
                             flexShrink: 0,
                             width: "80px",
                             padding: "12px",
-                            borderRadius: "8px",
                             cursor: "pointer",
                             textAlign: "center",
-                            backgroundColor:
-                                date.toDateString() ===
-                                selectedDate?.toDateString()
-                                    ? "#b232f6"
-                                    : "#e0e0e0",
                         }}
                         onClick={() => {
                             setSelectedDate(date);
                             onDateSelect(date);
                         }}
                     >
-                        <p style={{ margin: 0, fontSize: "14px" }}>
+                        <p style={{ margin: 0, fontSize: "14px", color: "white" }}>
                             {date.toLocaleDateString("en-US", {
                                 weekday: "short",
                             })}
-                            <br />
-                            {date.toLocaleDateString("en-US", {
-                                day: "numeric",
-                            })}
                         </p>
+                        <div
+                            style={{
+                                width: "30px",
+                                height: "30px",
+                                borderRadius: "50%",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                backgroundColor:
+                                    date.toDateString() ===
+                                    selectedDate?.toDateString()
+                                        ? "#b232f6"
+                                        : "transparent",
+                                margin: "4px auto 0",
+                            }}
+                        >
+                            <p style={{ margin: 0, fontSize: "14px", color: "white" }}>
+                                {date.toLocaleDateString("en-US", {
+                                    day: "numeric",
+                                })}
+                            </p>
+                        </div>
                     </div>
                 ))}
+                <button onClick={handlePreviousWeek}
+                style={{
+                    backgroundColor: "transparent",
+                    border: "none",
+                    color: "white",
+                    fontSize: "16px",
+                    cursor: "pointer"
+                }}>Next</button>
             </div>
         </div>
-	);
+    );
 };
 
 export default HorizontalCalendar;

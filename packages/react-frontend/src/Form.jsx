@@ -24,7 +24,8 @@ function Form(props) {
 
 	return (
 		<form>
-			<label htmlFor="time">Time</label>
+			<label htmlFor="time"
+			style={{ color: "white"}}>Time</label>
 			<input
 				type="text"
 				name="time"
@@ -32,7 +33,8 @@ function Form(props) {
 				value={person.time}
 				onChange={handleChange}
 			/>
-			<label htmlFor="task">Task</label>
+			<label htmlFor="task"
+			style={{color: "white"}}>Task</label>
 			<input
 				type="text"
 				name="task"

@@ -234,13 +234,13 @@ function ToDoPage({ goToTaskPage }) {
 					element={
 						isLoggedIn ? (
 							<div className="container">
-								<h2 style={{ textAlign: "center", marginBottom: "1rem" }}>
+								<h1 style={{ textAlign: "center", marginBottom: "1rem", color: "white" }}>
 									{formatCurrentMonth(selectedDate)}
-								</h2>
+								</h1>
 								<HorizontalCalendar
 									onDateSelect={handleDateSelection}
 								/>
-								<h1>Todo List</h1>
+								<h1 style={{color: "white"}}>Todo List</h1>
 								<Table
 									characterData={tasksByDay}
 									removeCharacter={

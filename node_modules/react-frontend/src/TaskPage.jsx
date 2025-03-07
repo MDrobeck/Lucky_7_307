@@ -17,7 +17,7 @@ function TaskPage({ goToToDoPage }) {
 
 	return (
 		<div className="container">
-			<h1>Please Enter Tasks</h1>
+			<h1 style={{color: "white"}}>Please Enter Tasks</h1>
 			<TaskTable
 				characterData={characters}
 				removeCharacter={removeOneCharacter}

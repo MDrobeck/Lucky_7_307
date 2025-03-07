@@ -37,7 +37,7 @@ function TableBody(props) {
 
 function Table(props) {
 	return (
-		<table>
+		<table style={{ color: "white"}}>
 			<TableHeader />
 			<TableBody
 				characterData={props.characterData}
