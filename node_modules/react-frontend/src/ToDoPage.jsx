@@ -240,12 +240,13 @@ function ToDoPage({ goToTaskPage }) {
 								<HorizontalCalendar
 									onDateSelect={handleDateSelection}
 								/>
-								<h1 style={{color: "white"}}>Todo List</h1>
+								<h1 style={{color: "white"}}>Daily Planner</h1>
 								<Table
 									characterData={tasksByDay}
 									removeCharacter={
 										removeOneCharacter
 									}
+									style={{ marginBottom: "20px" }}
 								/>
 								<Form
 									handleSubmit={updateTasks}
@@ -259,13 +260,17 @@ function ToDoPage({ goToTaskPage }) {
 											display: "flex",
 											alignItems: "center",
 											justifyContent: "center",
-											width: "40px",
-											height: "40px",
+											width: "50px",
+											height: "50px",
 											borderRadius: "50%",
+											background: "#9979b8",
+											position: "fixed", 
+        									bottom: "20px", 
+        									right: "20px",
 										}}
 									>
 										<img
-											className="icon"
+											className="Tableicon"
 											src="src/assets/table.svg"
 											alt="Table"
 										></img>

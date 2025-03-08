@@ -31,9 +31,11 @@ function TaskPage({ goToToDoPage }) {
 						display: "flex",
 						alignItems: "center",
 						justifyContent: "center",
-						width: "40px",
-						height: "40px",
-						borderRadius: "50%",
+						width: "50px",
+						height: "50px",
+						borderRadius: "60%",
+						background: "#9979b8",
+						border: "2px solid #000000",
 					}}>
 					<img className="icon" 
 					src="src/assets/home.svg"
