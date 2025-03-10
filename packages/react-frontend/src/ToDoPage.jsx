@@ -27,7 +27,6 @@ function ToDoPage({ goToTaskPage, savedToken, loginState }) {
 		  return "Invalid date format";
 		}
 	  
-		// Note the change in index order for day and month for DD/MM/YYYY
 		const day = parseInt(dateParts[1], 10);
 		const month = parseInt(dateParts[0], 10) - 1; // Month is now at index 1
 		const year = parseInt(dateParts[2], 10);
