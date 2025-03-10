@@ -10,17 +10,17 @@ function getTasks(name) {
 }
 
 function addTask(task, username) {
-    const newTask = {
+	const newTask = {
 		time: "",
 		task: "",
 		date: "",
-        username: ""
-	}
-    newTask.time = task.time;
-    newTask.task = task.task;
-    newTask.date = task.date;
-    newTask.username = username;
-    console.log("this is newTask", newTask);
+		username: ""
+	};
+	newTask.time = task.time;
+	newTask.task = task.task;
+	newTask.date = task.date;
+	newTask.username = username;
+	console.log("this is newTask", newTask);
 	const taskToAdd = new taskModel(newTask);
 	const promise = taskToAdd.save();
 	return promise;

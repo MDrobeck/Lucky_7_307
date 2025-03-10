@@ -6,7 +6,9 @@ import userService from "./services/user-service.js";
 function postUser(userToAdd) {
 	userService
 		.addUser(userToAdd)
-		.then((res) => {if (res.status === 201) return userToAdd})
+		.then((res) => {
+			if (res.status === 201) return userToAdd;
+		})
 		.catch((error) => res.status(500).send(error));
 }
 
@@ -19,7 +21,15 @@ export function registerUser(req, res) {
 
 	if (!username || !pwd) {
 		res.status(400).send("Bad request: Invalid input data.");
-	} else if (findUser(username).then((existingUser) => {if (existingUser) {true} else {false}})) {
+	} else if (
+		findUser(username).then((existingUser) => {
+			if (existingUser) {
+				true;
+			} else {
+				false;
+			}
+		})
+	) {
 		res.status(409).send("Username already taken");
 	} else {
 		bcrypt
@@ -58,7 +68,7 @@ export function authenticateUser(req, res, next) {
 	const authHeader = req.headers["authorization"];
 	//Getting the 2nd part of the auth header (the token)
 	const token = authHeader && authHeader.split(" ")[1];
-	console.log("this is token", token)
+	console.log("this is token", token);
 
 	if (!token) {
 		console.log("No token received");
@@ -82,31 +92,38 @@ export function authenticateUser(req, res, next) {
 }
 
 export function loginUser(req, res) {
-    const { username, pwd } = req.body;
-    findUser(username)
-        .then((retrievedUser) => {
-            if (!retrievedUser) {
-                res.status(401).send("Unauthorized");
-            } else {
-                bcrypt.compare(pwd, retrievedUser.hashedPassword)
-                    .then((matched) => {
-                        if (matched) {
-                            generateAccessToken(username)
-                                .then((token) => {
-                                    res.status(200).send({ token: token });
-                                });
-                        } else {
-                            res.status(401).send("Unauthorized");
-                        }
-                    })
-                    .catch((error) => {
-                        console.error("Error comparing passwords:", error);
-                        res.status(500).send("Internal server error");
-                    });
-            }
-        })
-        .catch((error) => {
-            console.error("Error finding user:", error);
-            res.status(500).send("Internal server error");
-        });
+	const { username, pwd } = req.body;
+	findUser(username)
+		.then((retrievedUser) => {
+			if (!retrievedUser) {
+				res.status(401).send("Unauthorized");
+			} else {
+				bcrypt
+					.compare(pwd, retrievedUser.hashedPassword)
+					.then((matched) => {
+						if (matched) {
+							generateAccessToken(username).then(
+								(token) => {
+									res.status(200).send({
+										token: token
+									});
+								}
+							);
+						} else {
+							res.status(401).send("Unauthorized");
+						}
+					})
+					.catch((error) => {
+						console.error(
+							"Error comparing passwords:",
+							error
+						);
+						res.status(500).send("Internal server error");
+					});
+			}
+		})
+		.catch((error) => {
+			console.error("Error finding user:", error);
+			res.status(500).send("Internal server error");
+		});
 }

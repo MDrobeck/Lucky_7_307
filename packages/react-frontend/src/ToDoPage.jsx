@@ -11,7 +11,7 @@ import {
 import Login from "./Login.jsx";
 
 function ToDoPage({ goToTaskPage, savedToken, loginState }) {
-	const [selectedDate, setSelectedDate] = useState(new Date());
+	const [selectedDate, setSelectedDate] = useState(new Date().toLocaleDateString());
 
 	const [tasksByDay, setTasksByDay] = useState([]);
 
@@ -33,7 +33,7 @@ function ToDoPage({ goToTaskPage, savedToken, loginState }) {
 			method: "POST",
 			headers: addAuthHeader({
 				"Content-Type": "application/json"
-			}), 
+			}),
 			body: JSON.stringify(task)
 		});
 
@@ -100,7 +100,10 @@ function ToDoPage({ goToTaskPage, savedToken, loginState }) {
 	}
 
 	const handleDateSelection = (date) => {
-		setSelectedDate(date);
+		// this sets it to mm/dd/yyyy format
+		const dateString = date.toLocaleDateString();
+		console.log("this is the date: ", dateString)
+		setSelectedDate(dateString);
 		fetchTasks()
 			.then((res) =>
 				res.status === 200 ? res.json() : undefined
@@ -108,7 +111,7 @@ function ToDoPage({ goToTaskPage, savedToken, loginState }) {
 			.then((json) => {
 				if (json) {
 					setTasksByDay(
-						filterTasksByDate(json, date.toDateString())
+						filterTasksByDate(json, dateString)
 					);
 				} else {
 					setTasksByDay([]);
@@ -134,7 +137,7 @@ function ToDoPage({ goToTaskPage, savedToken, loginState }) {
 					setTasksByDay(
 						filterTasksByDate(
 							json,
-							selectedDate.toDateString()
+							selectedDate
 						)
 					);
 				} else {
@@ -295,6 +298,7 @@ function ToDoPage({ goToTaskPage, savedToken, loginState }) {
 						<Login
 							handleSubmit={signupUser}
 							buttonLabel="Sign Up"
+							buttonLabel2="Log In"
 						/>
 					}
 				/>
