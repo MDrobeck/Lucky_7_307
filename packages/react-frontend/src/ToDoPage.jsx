@@ -10,7 +10,7 @@ import {
 } from "react-router-dom";
 import Login from "./Login.jsx";
 
-function ToDoPage({ goToTaskPage }) {
+function ToDoPage({ goToTaskPage, savedToken, loginState }) {
 	const [selectedDate, setSelectedDate] = useState(new Date());
 
 	const [tasksByDay, setTasksByDay] = useState([]);
@@ -18,7 +18,8 @@ function ToDoPage({ goToTaskPage }) {
 	const INVALID_TOKEN = "INVALID_TOKEN";
 	const [token, setToken] = useState(INVALID_TOKEN);
 	const [message, setMessage] = useState("");
-	const [isLoggedIn, setIsLoggedIn] = useState(false);
+	// loginState is passed in from myApp when we're coming from taskPage
+	const [isLoggedIn, setIsLoggedIn] = useState(loginState); 
 
 	const formatCurrentMonth = (date) => {
 		return new Intl.DateTimeFormat("en-US", {
@@ -118,7 +119,12 @@ function ToDoPage({ goToTaskPage }) {
 	};
 
 	useEffect(() => {
-		console.log("useEffect is running. Current token:", token);
+		console.log("useEffect is running. savedToken:", savedToken, "Current token:", token);
+		if (savedToken !== null) {
+			console.log("inside the if statement!");
+			setToken(savedToken);
+			setIsLoggedIn(true);
+		}
 		fetchTasks()
 			.then((res) =>
 				res.status === 200 ? res.json() : undefined
@@ -254,7 +260,7 @@ function ToDoPage({ goToTaskPage }) {
 								/>
 								<ul>
 									<li
-										onClick={goToTaskPage} // Navigate to task page
+										onClick={() => goToTaskPage(token)} // Navigate to task page
 										style={{
 											cursor: "pointer",
 											display: "flex",
