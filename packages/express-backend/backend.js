@@ -4,7 +4,7 @@ import { registerUser, loginUser, authenticateUser } from "./auth.js";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 import taskService from "./services/task-service.js";
-
+import scheduleService from "./services/schedule-service.js";
 dotenv.config();
 
 const { MONGO_CONNECTION_STRING } = process.env;
@@ -69,3 +69,14 @@ app.post("/users", (req, res) => {
 		.then((addedUser) => res.status(201).send(addedUser))
 		.catch((error) => res.status(500).send(error));
 });
+
+//adding schedule plans to mongo. 
+app.post("/schedules". (req, res) => {
+	const scheduleToAdd = req.body;
+	const username = req.username;
+	scheduleService
+		.addSchedule(scheduleToAdd, username)
+		.then((addedSchedule) => res.status(201).send(addedSchedule)
+		.catch((error) => res.status(500).send(error))
+
+}); 
