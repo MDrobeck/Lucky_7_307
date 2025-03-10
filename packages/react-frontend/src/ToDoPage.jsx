@@ -22,11 +22,20 @@ function ToDoPage({ goToTaskPage, savedToken, loginState }) {
 	const [isLoggedIn, setIsLoggedIn] = useState(loginState); 
 
 	const formatCurrentMonth = (date) => {
-		return new Intl.DateTimeFormat("en-US", {
-			month: "long"
-		}).format(date);
+		const dateParts = date.split('/');
+		if (dateParts.length !== 3) {
+		  return "Invalid date format";
+		}
+	  
+		// Note the change in index order for day and month for DD/MM/YYYY
+		const day = parseInt(dateParts[1], 10);
+		const month = parseInt(dateParts[0], 10) - 1; // Month is now at index 1
+		const year = parseInt(dateParts[2], 10);
+	  
+		const dateObject = new Date(year, month, day);
+		const longMonth = dateObject.toLocaleDateString(undefined, { month: 'long' });
+		return longMonth;
 	};
-
 
 	function postTask(task) {
 		const promise = fetch("Http://localhost:8000/tasks", {
