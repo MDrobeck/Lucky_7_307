@@ -120,11 +120,11 @@ function ToDoPage({ goToTaskPage, savedToken, loginState }) {
 
 	useEffect(() => {
 		console.log("useEffect is running. savedToken:", savedToken, "Current token:", token);
+		console.log("loginstate: ", loginState);
 		if (savedToken !== null) {
 			console.log("inside the if statement!");
 			setToken(savedToken);
-			setIsLoggedIn(true);
-		}
+		} 
 		fetchTasks()
 			.then((res) =>
 				res.status === 200 ? res.json() : undefined

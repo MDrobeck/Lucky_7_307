@@ -7,6 +7,7 @@ import TaskPage from "./TaskPage";
 function MyApp() {
     const [showPage, setShowPage] = useState("ToDoPage"); // State to toggle between pages
     const [taskPageToken, setTaskPageToken] = useState(null);
+    const [loginState, setLoginState] = useState(false);
 
 
     // Function to navigate to ToDoPage
@@ -17,6 +18,7 @@ function MyApp() {
     // Function to navigate to TaskPage
     const goToTaskPage = (token) => {
         setTaskPageToken(token);
+        setLoginState(true);
         setShowPage("TaskPage");
     };
 
@@ -25,7 +27,7 @@ function MyApp() {
             {showPage === "TaskPage" ? (
                 <TaskPage goToToDoPage={goToToDoPage} token={taskPageToken}/>
             ) : (
-                <ToDoPage goToTaskPage={goToTaskPage} savedToken={taskPageToken} loginState={true}/>
+                <ToDoPage goToTaskPage={goToTaskPage} savedToken={taskPageToken} loginState={loginState}/>
             )}
         </>
     );
